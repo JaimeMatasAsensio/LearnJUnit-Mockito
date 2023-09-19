@@ -21,7 +21,6 @@ public class Cuenta {
     public void setPersona(String persona) {
         this.persona = persona;
     }
-
     //Get&Set para Saldo
     public BigDecimal getSaldo() {
         return saldo;
