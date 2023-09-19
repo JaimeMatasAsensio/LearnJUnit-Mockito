@@ -7,6 +7,13 @@ public class Cuenta {
     private BigDecimal saldo;
     private String persona;
 
+    public Cuenta(BigDecimal saldo, String persona) {
+        this.saldo = saldo;
+        this.persona = persona;
+    }
+
+    public Cuenta(){}
+
     //Get&set para Persona
     public String getPersona() {
         return persona;
