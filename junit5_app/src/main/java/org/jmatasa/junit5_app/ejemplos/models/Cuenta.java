@@ -9,6 +9,22 @@ public class Cuenta {
     private BigDecimal saldo;
     private String persona;
 
+    private Banco banco;
+
+    public Banco getBanco() {
+        return banco;
+    }
+
+    public void setBanco(Banco banco) {
+        this.banco = banco;
+    }
+
+    public Cuenta(BigDecimal saldo, String persona, Banco banco) {
+        this.saldo = saldo;
+        this.persona = persona;
+        this.banco = banco;
+    }
+
     public Cuenta(BigDecimal saldo, String persona) {
         this.saldo = saldo;
         this.persona = persona;
@@ -34,13 +50,10 @@ public class Cuenta {
 
     public void debito(BigDecimal monto){
 
-        BigDecimal nuevoSaldo = this.saldo.subtract(monto);
+        this.saldo = this.saldo.subtract(monto);
 
-        if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0)
+        if (saldo.compareTo(BigDecimal.ZERO) < 0)
             throw new DineroInsuficienteException("Dinero insuficiente");
-
-
-
     }
 
     public void credito(BigDecimal monto){
