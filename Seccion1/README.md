@@ -6,7 +6,11 @@ Repositorio para el aprendizaje de Mockito-Junit
 - Anotaciones de JUnit
 - Tipos de Assert's
 - Uso del AssertAll
-- Anotaciones utiles: @DisplayName, @Disabled
+- Anotaciones utiles: @DisplayName, @Disabled...
+- Ciclo de vida de Anotaciones
+- Test condicionales
+- Ejecucion de test programaticamente con @Assumptions
+- Clases anidadas con @Nested
 - ...
 
-Siguiente Leccion: 18
+Siguiente Leccion: 24
