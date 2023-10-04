@@ -1,12 +1,3 @@
 # LearnJUnit-Mockito
 
-Repositorio para el aprendizaje de Mockito-Junit
-
-- TDD
-- Anotaciones de JUnit
-- Tipos de Assert's
-- Uso del AssertAll
-- Anotaciones utiles: @DisplayName, @Disabled
-- ...
-
-Siguiente Leccion: 18
+Repositorio para el curso udemy "Guía Completa JUnit y Mockito incluye Spring Boot Test 2023"
