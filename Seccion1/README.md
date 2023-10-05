@@ -11,6 +11,8 @@ Repositorio para el aprendizaje de Mockito-Junit
 - Test condicionales
 - Ejecucion de test programaticamente con @Assumptions
 - Clases anidadas con @Nested
-- ...
+- Repeticion de tests
+- Parametrizacion de tests
+- Fuentes de parametrizacion de tests
 
-Siguiente Leccion: 24
+Siguiente Leccion: 27

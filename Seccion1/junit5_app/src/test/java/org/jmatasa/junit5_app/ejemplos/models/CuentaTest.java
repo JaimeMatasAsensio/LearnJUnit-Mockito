@@ -3,8 +3,15 @@ package org.jmatasa.junit5_app.ejemplos.models;
 import org.jmatasa.junit5_app.ejemplos.exceptions.DineroInsuficienteException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -313,6 +320,89 @@ class CuentaTest {
         }
     }
 
+    @Nested
+    @DisplayName("Tests para comprobar test de repeticion")
+    class RepeatedTestClass{
+        @RepeatedTest(value = 5,name = "{displayName} - Repeticion de test : {currentRepetition} de {totalRepetitions}")
+        void testRepeticion() {
+            cuentaOrigen.debito(new BigDecimal(100));
+            assertNotNull(cuentaOrigen.getSaldo());
+            assertEquals(156887.123, cuentaOrigen.getSaldo().doubleValue());
+            assertEquals("156887.123", cuentaOrigen.getSaldo().toPlainString());
+        }
+    }
+
+    @Nested
+    @DisplayName("Test para comprobar los tests parametrizados")
+    class ParametrizedTestsClass{
+        @ParameterizedTest
+        @ValueSource(strings = {"100000000","2000000","30000000","40000000","5000000"})
+        void testParametrizadoSaldoCuenta(String monto) {
+            Exception ex = assertThrows(DineroInsuficienteException.class, () -> {
+                cuentaOrigen.debito(new BigDecimal(monto));
+            },"Dinero insuficiente");
+            String actual =ex.getMessage();
+            String esperado ="Dinero insuficiente";
+            assertEquals(esperado, actual);
+        }
+
+        @ParameterizedTest(name = "numero {index} ejecutando con valor {0} - {argumentsWithNames}")
+        @ValueSource(doubles = {100000000,2000000,30000000,40000000,5000000})
+        void testParametrizadoSaldoCuenta1(Double monto) {
+            Exception ex = assertThrows(DineroInsuficienteException.class, () -> {
+                cuentaOrigen.debito(new BigDecimal(monto));
+            },"Dinero insuficiente");
+            String actual =ex.getMessage();
+            String esperado ="Dinero insuficiente";
+            assertEquals(esperado, actual);
+        }
+    }
+
+    @Nested
+    @DisplayName("Test para mostrar las distintas fuentes de datos para tests parametrizados")
+    class SourcesForParametrizedTestsClass{
+        @ParameterizedTest
+        @CsvSource({"1,100000000","2,2000000","3,30000000","4,40000000","5,5000000"})
+        void testParametrizadoSaldoCsvSource(String index, String monto) {
+            System.out.println(index + " : " + monto);
+            Exception ex = assertThrows(DineroInsuficienteException.class, () -> {
+                cuentaOrigen.debito(new BigDecimal(monto));
+            },"Dinero insuficiente");
+            String actual =ex.getMessage();
+            String esperado ="Dinero insuficiente";
+            assertEquals(esperado, actual);
+        }
+
+        @ParameterizedTest
+        @CsvFileSource(resources="/data.csv")
+        void testParametrizadoSaldoCsvFileSource(String monto) {
+
+            Exception ex = assertThrows(DineroInsuficienteException.class, () -> {
+                cuentaOrigen.debito(new BigDecimal(monto));
+            },"Dinero insuficiente");
+            String actual =ex.getMessage();
+            String esperado ="Dinero insuficiente";
+            assertEquals(esperado, actual);
+        }
+
+        @ParameterizedTest
+        @MethodSource("montoList")
+        void testParametrizadoSaldoMethodSource(String monto) {
+
+            Exception ex = assertThrows(DineroInsuficienteException.class, () -> {
+                cuentaOrigen.debito(new BigDecimal(monto));
+            },"Dinero insuficiente");
+            String actual =ex.getMessage();
+            String esperado ="Dinero insuficiente";
+            assertEquals(esperado, actual);
+        }
+
+        static List<String> montoList(){
+            return Arrays.asList("100000000","2000000","30000000","40000000","5000000");
+        }
+
+
+    }
 
 
 }
