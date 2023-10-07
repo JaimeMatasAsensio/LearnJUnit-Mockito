@@ -14,5 +14,9 @@ Repositorio para el aprendizaje de Mockito-Junit
 - Repeticion de tests
 - Parametrizacion de tests
 - Fuentes de parametrizacion de tests
+- Marcas de pruebas con @Tag y seleccion de pruebas
+- Inyeccion de dependencias y componentes
+- Componente TestInfo e interfaz TestResporter
+- Sure-fire Maven plugin y lanzamiento de Test desde consola
 
-Siguiente Leccion: 27
+Fin seccion 1 :godmode: :+1:

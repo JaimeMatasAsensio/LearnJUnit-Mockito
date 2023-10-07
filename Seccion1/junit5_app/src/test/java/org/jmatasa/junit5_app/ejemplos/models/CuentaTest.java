@@ -10,10 +10,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
@@ -25,13 +27,25 @@ class CuentaTest {
     private Banco banco;
     private String nombre;
     private BigDecimal saldo;
+
+    private TestInfo  testInfo;
+    private TestReporter testReporter;
+
+    @Tag("setUp")
     @BeforeEach
-    void setUpTest(){
+    void setUpTest(TestInfo  testInfo, TestReporter testReporter){
         nombre = "Jaime Matas Asensio";
         saldo = new BigDecimal("156987.123");
         banco = new Banco("Santander");
         cuentaOrigen = new Cuenta(saldo,nombre,banco);
         cuentaDestino = new Cuenta(saldo,nombre,banco);
+        //TestInfo y TestReporter
+        System.out.println("Ejecutando : " + testInfo.getDisplayName() + " " + testInfo.getTestMethod().orElse(null).getName());
+
+        //Si queremos acceder en los metodos a testInfo y testReporter debemos inyectarlos
+        this.testInfo = testInfo;
+        this.testReporter = testReporter;
+        if(testInfo.getTags().contains("setUp")) System.out.println("Finalizado el SetUp");
 
     }
 
@@ -45,27 +59,31 @@ class CuentaTest {
         System.out.println("... Test finalizados");
     }
 
+    //Cuando usamos @Nested organizamos las pruebas de forma visual
     //Al utilizar @Nested podemos tener distintas configuraciones de lanzamiento para las clases.
+    //Cuando usamos @Tag podemos organizar las pruebas en funcion de su ejecucion
+    //Para lanzar por etiquetas es necesario indicarlo en las configuraciones de lanzamiento
+    @Tag("attr")
     @Nested
     @DisplayName("Tests para comprobar atributos de la clase cuenta")
     class cuentaTestNombre{
         @Test
         @DisplayName("Cuenta getPersona OK")
         void nombreCuentaOK() {
-            assertEquals("Jaime Matas Asensio", cuentaOrigen.getPersona(),"El nombre no puede ser null");
+            assertEquals("Jaime Matas Asensio", cuentaOrigen.getPersona(),()->"El nombre no puede ser null");
         }
 
         @Test
         @DisplayName("Cuenta getPersona KO")
         void nombreCuentaKO() {
-            assertNotEquals("Jaime", cuentaOrigen.getPersona(),"No es el nombre esperado");
+            assertNotEquals("Jaime", cuentaOrigen.getPersona(),()->"No es el nombre esperado");
         }
 
         @Test
         @DisplayName("Cuenta ContructorOK")
         void constructorCuentaOK() {
             Cuenta cuenta = new Cuenta(new BigDecimal("15478.6978"), "Jaime");
-            assertNotNull(cuenta.getSaldo(),"El saldo no puede ser null");
+            assertNotNull(cuenta.getSaldo(),()->"El saldo no puede ser null");
             assertTrue(cuenta.getPersona() != null && cuenta.getSaldo() != null);
 
         }
@@ -96,6 +114,7 @@ class CuentaTest {
 
     }
 
+    @Tag("credDeb")
     @Nested
     @DisplayName("Tests para comprobar los metodos credito y debito")
     class cuentaTestCreditoDebito{
@@ -147,15 +166,22 @@ class CuentaTest {
         }
     }
 
+    @Tag("transf")
+    @Tag("asserts")
     @Nested
     @DisplayName("Tests para comprobar el metodo transferencia")
     class cuentaTestTransferencia{
         @Test
         @DisplayName("Test Transferir dinero entre cuentas") //156987.123
         void testTransferirDineroCuentas() {
+
             banco.transferir(cuentaOrigen,cuentaDestino, new BigDecimal("1000.00"));
             assertEquals("155987.123",cuentaOrigen.getSaldo().toPlainString());
             assertEquals("157987.123",cuentaDestino.getSaldo().toPlainString());
+
+            if(testInfo.getTags().contains("transf")) {
+                System.out.println("Accediendo a testInfo desde un metodo");
+            }
         }
 
         @Test
@@ -188,9 +214,14 @@ class CuentaTest {
                                             c->c.getPersona().equals("Jaime Matas Asensio"))
                                     .findFirst().get().getPersona()));
 
+            if(testInfo.getTags().contains("transf")) {
+                testReporter.publishEntry("Publicado mediante testReporter");
+            }
+
         }
     }
 
+    @Tag("assmp")
     @Nested
     @DisplayName("Tests para comprobar los assumptions")
     class cuentaTestAssumptions{
@@ -212,7 +243,7 @@ class CuentaTest {
         @Test
         @DisplayName("Test para excepcion Insuficiente dinero")
         void testDineroInsuficienteExceptionAssumptionsDat() {
-            boolean esDev = "pro".equals(System.getProperty("ENV"));
+            boolean esDev = "dev".equals(System.getProperty("ENV"));
             Exception ex = assertThrows(DineroInsuficienteException.class, () -> {
                 cuentaOrigen.debito(new BigDecimal("2000000"));
             },"Dinero insuficiente");
@@ -225,6 +256,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("paramSys")
     @Nested
     @DisplayName("Tests para comprobar habilitar tests en funcion de parametros de sistema")
     class SistemaOperativoTest{
@@ -250,6 +282,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("javaVer")
     @Nested
     @DisplayName("Tests para comprobar habilitar tests en funcion de versiones de JAVA")
     class JavaVersionTest{
@@ -279,6 +312,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("propSys")
     @Nested
     @DisplayName("Tests para comprobar habilitar tests en funcion de propiedades de sistema")
     class SystemPropertiesTest{
@@ -298,6 +332,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("entVal")
     @Nested
     @DisplayName("Tests para comprobar habilitar tests en funcion de variables de entorno")
     class VariableAmbientetest{
@@ -320,6 +355,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("repet")
     @Nested
     @DisplayName("Tests para comprobar test de repeticion")
     class RepeatedTestClass{
@@ -332,6 +368,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("param")
     @Nested
     @DisplayName("Test para comprobar los tests parametrizados")
     class ParametrizedTestsClass{
@@ -358,6 +395,7 @@ class CuentaTest {
         }
     }
 
+    @Tag("Suorces")
     @Nested
     @DisplayName("Test para mostrar las distintas fuentes de datos para tests parametrizados")
     class SourcesForParametrizedTestsClass{
@@ -403,6 +441,50 @@ class CuentaTest {
 
 
     }
+
+    @Tag("InyecDep")
+    @Nested
+    @DisplayName("Inyecccion de dependencia para y uso de componentes TestInfo y Test Reporter")
+    class InyeccionDependiaTest{
+
+        @Test
+        @DisplayName("Cuenta getPersona OK")
+        void nombreCuentaTestInfo(TestInfo testInfo, TestReporter testReporter) {
+            //Este reporter se puede situar en el metodo @BeforeEach para que se muestre Antes de cada test
+            System.out.println("Ejecutando : " + testInfo.getDisplayName() + " " + testInfo.getTestMethod().orElse(null).getName());
+            assertEquals("Jaime Matas Asensio", cuentaOrigen.getPersona(),()->"El nombre no puede ser null");
+
+            //Mas Ejemplos en el inicio de la clase
+        }
+
+    }
+
+    @Tag("TimeOut")
+    @Nested
+    @DisplayName("Ejemplos para las pruebas de TimeOut")
+    class TimeOutTest{
+
+        @Test
+        @Timeout(1)
+        void testTimeout() throws InterruptedException {
+            TimeUnit.MILLISECONDS.sleep(1L);
+        }
+
+        @Test
+        @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
+        void testTimeout2() throws InterruptedException {
+            TimeUnit.MILLISECONDS.sleep(100L);
+        }
+
+        @Test
+        void testTimeOutAssertions() {
+            assertTimeout(Duration.ofSeconds(1),()->{
+                TimeUnit.MILLISECONDS.sleep(100L);
+            });
+        }
+    }
+
+
 
 
 }
