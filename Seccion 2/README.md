@@ -7,6 +7,10 @@ Repositorio para el aprendizaje de Mockito-Junit
 - Inclusion de dependencias
 - Metodo estatico when
 - Metodo estatico Verify
+- Notaciones de Mockito @Mock y @InjectMocks
+- Inserccion de secuencias
+- Metodologia BDD "Behaviour Drive Development"
+- Manejo de Errores con thenThrow
 - ...
 
 Siguiente leccion a practicar: 41
