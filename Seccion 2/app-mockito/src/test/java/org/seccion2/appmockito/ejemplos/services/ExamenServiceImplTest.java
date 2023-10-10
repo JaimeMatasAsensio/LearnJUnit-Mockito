@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -162,5 +163,50 @@ class ExamenServiceImplTest {
 
         assertEquals(IllegalArgumentException.class,exception.getClass());
         verify(repositoryPregunta).findPreguntasPorExamenId(null);
+    }
+
+    @Test
+    void testArgumentMatchers() {
+        when(repository.findAll()).thenReturn(DatosExamenes.EXAMENES);
+        when(repositoryPregunta.findPreguntasPorExamenId(anyLong())).thenReturn(DatosExamenes.PREGUNTAS);
+        service.findExamenPornombreConPreguntas("Matematicas");
+
+        verify(repository).findAll();
+        verify(repositoryPregunta).findPreguntasPorExamenId(argThat(arg -> arg != null && arg.equals(5L)));
+    }
+
+    @Test
+    void testArgumentMatchersPersonalizado() {
+        when(repository.findAll()).thenReturn(DatosExamenes.EXAMENES);
+        when(repositoryPregunta.findPreguntasPorExamenId(anyLong())).thenReturn(DatosExamenes.PREGUNTAS);
+        service.findExamenPornombreConPreguntas("Matematicas");
+
+        verify(repository).findAll();
+        verify(repositoryPregunta).findPreguntasPorExamenId(argThat(new MiArgumentMatchers()));
+    }
+
+    @Test
+    void testArgumentMatchersLambdaExpresion() {
+        when(repository.findAll()).thenReturn(DatosExamenes.EXAMENES);
+        when(repositoryPregunta.findPreguntasPorExamenId(anyLong())).thenReturn(DatosExamenes.PREGUNTAS);
+        service.findExamenPornombreConPreguntas("Matematicas");
+
+        verify(repository).findAll();
+        verify(repositoryPregunta).findPreguntasPorExamenId(argThat((argument)-> argument != null && argument > 0));
+    }
+
+    public static class MiArgumentMatchers implements ArgumentMatcher<Long>{
+        private Long argument;
+
+        @Override
+        public boolean matches(Long argument) {
+            this.argument = argument;
+            return argument != null && argument > 0L;
+        }
+
+        @Override
+        public String toString() {
+            return "Mensaje personalizado de error";
+        }
     }
 }
