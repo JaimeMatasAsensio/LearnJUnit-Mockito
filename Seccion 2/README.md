@@ -11,7 +11,11 @@ Repositorio para el aprendizaje de Mockito-Junit
 - Inserccion de secuencias
 - Metodologia BDD "Behaviour Drive Development"
 - Manejo de Errores con thenThrow
-- ArgumentMatcers y Personalizacion de ArgumentMatchers
+- ArgumentMatchers y Personalizacion de ArgumentMatchers
+- ArgumentCaptor
+- doThrow para execepciones de metedos void
+- doAnswer para generar respuestas a medida
+- doCallRealMethod para la llamada real a un metodo Mock
 - ...
 
-Siguiente leccion a practicar: 47
+Siguiente leccion a practicar: 51

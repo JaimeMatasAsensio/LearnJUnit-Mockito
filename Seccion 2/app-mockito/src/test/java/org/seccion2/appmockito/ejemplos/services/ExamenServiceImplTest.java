@@ -5,19 +5,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatcher;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
+import org.seccion2.appmockito.ejemplos.DatosExamenes;
 import org.seccion2.appmockito.ejemplos.models.Examen;
-import org.seccion2.appmockito.ejemplos.reporitories.ExamenRepositoryOtro;
-import org.seccion2.appmockito.ejemplos.reporitories.IExamenRepository;
-import org.seccion2.appmockito.ejemplos.reporitories.IPreguntaRepository;
+import org.seccion2.appmockito.ejemplos.repositories.ExamenRepositoryImpl;
+import org.seccion2.appmockito.ejemplos.repositories.IExamenRepository;
+import org.seccion2.appmockito.ejemplos.repositories.IPreguntaRepository;
+import org.seccion2.appmockito.ejemplos.repositories.PreguntasRepositoryImpl;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,11 +27,15 @@ import static org.mockito.Mockito.*;
 class ExamenServiceImplTest {
 
     @Mock // Con las etiquetas mock creamos las instancias Mock
-    private IExamenRepository repository;
+private ExamenRepositoryImpl repository;
     @Mock
-    private IPreguntaRepository repositoryPregunta;
+    private PreguntasRepositoryImpl repositoryPregunta;
     @InjectMocks //Crear la instancia del objeto e inyecta los mocks, debe ser sobre la clase concreta no sobre la interfaz
     private ExamenServiceImpl service;
+
+    @Captor
+    private ArgumentCaptor<Long> captor;
+
     private List<Examen> datosEmpty;
 
     @BeforeEach
@@ -195,6 +197,58 @@ class ExamenServiceImplTest {
         verify(repositoryPregunta).findPreguntasPorExamenId(argThat((argument)-> argument != null && argument > 0));
     }
 
+    @Test
+    void testArgumentCaptor() {
+        when(repository.findAll()).thenReturn(DatosExamenes.EXAMENES);
+        when(repositoryPregunta.findPreguntasPorExamenId(anyLong())).thenReturn(DatosExamenes.PREGUNTAS);
+        service.findExamenPornombreConPreguntas("Matematicas");
+
+        //ArgumentCaptor<Long> captor = ArgumentCaptor.forClass(Long.class);
+
+        verify(repositoryPregunta).findPreguntasPorExamenId(captor.capture());
+
+        assertEquals(5L,captor.getValue());
+
+    }
+
+    @Test
+    void testDothrow() {
+        Examen examen = DatosExamenes.EXAMEN;
+        examen.setPreguntas(DatosExamenes.PREGUNTAS);
+        doThrow(IllegalArgumentException.class).when(repositoryPregunta).guardarVarias(any());
+        assertThrows(IllegalArgumentException.class, () -> {
+            service.guardar(examen);
+        });
+    }
+
+    @Test
+    void testDoAnswer() {
+        when(repository.findAll()).thenReturn(DatosExamenes.EXAMENES);
+        //when(repositoryPregunta.findPreguntasPorExamenId(anyLong())).thenReturn(DatosExamenes.PREGUNTAS);
+        doAnswer(invocation -> {
+            Long id = invocation.getArgument(0);
+            return id == 5 ? DatosExamenes.PREGUNTAS:null;
+        }).when(repositoryPregunta).findPreguntasPorExamenId(anyLong());
+
+        Examen examen = service.findExamenPornombreConPreguntas("Matematicas");
+
+        assertEquals(5L,examen.getId());
+        assertEquals("Matematicas",examen.getNombre());
+
+        verify(repositoryPregunta).findPreguntasPorExamenId(anyLong());
+
+    }
+
+    @Test
+    void testDoCallRealMethod() {
+        when(repository.findAll()).thenReturn(DatosExamenes.EXAMENES);
+        //when(repositoryPregunta.findPreguntasPorExamenId(anyLong())).thenReturn(DatosExamenes.PREGUNTAS);
+        doCallRealMethod().when(repositoryPregunta).findPreguntasPorExamenId(anyLong()); 
+        Examen examen = service.findExamenPornombreConPreguntas("Matematicas");
+        assertEquals(5L,examen.getId());
+        assertEquals("Matematicas",examen.getNombre());
+    }
+
     public static class MiArgumentMatchers implements ArgumentMatcher<Long>{
         private Long argument;
 
@@ -209,4 +263,6 @@ class ExamenServiceImplTest {
             return "Mensaje personalizado de error";
         }
     }
+
+
 }

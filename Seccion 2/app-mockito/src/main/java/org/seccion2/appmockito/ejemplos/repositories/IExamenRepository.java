@@ -1,4 +1,4 @@
-package org.seccion2.appmockito.ejemplos.reporitories;
+package org.seccion2.appmockito.ejemplos.repositories;
 
 import org.seccion2.appmockito.ejemplos.models.Examen;
 

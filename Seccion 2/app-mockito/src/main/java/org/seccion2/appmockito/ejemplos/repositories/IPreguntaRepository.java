@@ -1,4 +1,4 @@
-package org.seccion2.appmockito.ejemplos.reporitories;
+package org.seccion2.appmockito.ejemplos.repositories;
 
 import java.util.List;
 

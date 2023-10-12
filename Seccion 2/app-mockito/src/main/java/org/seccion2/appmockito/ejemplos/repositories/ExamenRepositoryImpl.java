@@ -1,24 +1,27 @@
-package org.seccion2.appmockito.ejemplos.reporitories;
+package org.seccion2.appmockito.ejemplos.repositories;
 
+import org.seccion2.appmockito.ejemplos.DatosExamenes;
 import org.seccion2.appmockito.ejemplos.models.Examen;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ExamenRepositoryOtro implements IExamenRepository{
+public class ExamenRepositoryImpl implements IExamenRepository{
     @Override
     public List<Examen> findAll() {
+        System.out.println("Metodo real" + this.getClass());
         try {
             TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return null;
+        return DatosExamenes.EXAMENES;
     }
 
     @Override
     public Examen guardar(Examen examen) {
-        return null;
+        System.out.println("Metodo real" + this.getClass());
+        return DatosExamenes.EXAMEN;
     }
 
 }

@@ -1,8 +1,8 @@
 package org.seccion2.appmockito.ejemplos.services;
 
 import org.seccion2.appmockito.ejemplos.models.Examen;
-import org.seccion2.appmockito.ejemplos.reporitories.IExamenRepository;
-import org.seccion2.appmockito.ejemplos.reporitories.IPreguntaRepository;
+import org.seccion2.appmockito.ejemplos.repositories.IExamenRepository;
+import org.seccion2.appmockito.ejemplos.repositories.IPreguntaRepository;
 
 import java.util.List;
 import java.util.Optional;
