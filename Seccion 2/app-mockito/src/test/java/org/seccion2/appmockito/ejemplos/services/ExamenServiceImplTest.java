@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 class ExamenServiceImplTest {
 
     @Mock // Con las etiquetas mock creamos las instancias Mock
-private ExamenRepositoryImpl repository;
+    private ExamenRepositoryImpl repository;
     @Mock
     private PreguntasRepositoryImpl repositoryPregunta;
     @InjectMocks //Crear la instancia del objeto e inyecta los mocks, debe ser sobre la clase concreta no sobre la interfaz
@@ -243,10 +243,38 @@ private ExamenRepositoryImpl repository;
     void testDoCallRealMethod() {
         when(repository.findAll()).thenReturn(DatosExamenes.EXAMENES);
         //when(repositoryPregunta.findPreguntasPorExamenId(anyLong())).thenReturn(DatosExamenes.PREGUNTAS);
-        doCallRealMethod().when(repositoryPregunta).findPreguntasPorExamenId(anyLong()); 
+        doCallRealMethod().when(repositoryPregunta).findPreguntasPorExamenId(anyLong());
         Examen examen = service.findExamenPornombreConPreguntas("Matematicas");
         assertEquals(5L,examen.getId());
         assertEquals("Matematicas",examen.getNombre());
+    }
+
+    @Test
+    void testSpy() {
+        //Los spy son un termino medio entre un Mock y un objeto real
+        //Declaramos los spy, siempre sobre metodos reales nada de interfaces
+        ExamenRepositoryImpl repository = spy(ExamenRepositoryImpl.class);
+        PreguntasRepositoryImpl repositoryPregunta = spy(PreguntasRepositoryImpl.class);
+
+        //Instanciamos nuestro servicio
+        ExamenServiceImpl service = new ExamenServiceImpl(repository,repositoryPregunta);
+
+        //Añadimos un comportamiento a uno de los metodos
+            //Con este metodo de mockito hacemos una llamada al metodo real
+        //when(repositoryPregunta.findPreguntasPorExamenId(anyLong())).thenReturn(DatosExamenes.PREGUNTAS_SPY);
+
+            //Con este metodo por el contrario encapsulamos el spy y simulamos la llamada y respuesta de este metodo
+        doReturn(DatosExamenes.PREGUNTAS_SPY).when(repositoryPregunta).findPreguntasPorExamenId(anyLong());
+
+        //Ejecutamos nuestra prueba
+        Examen examen = service.findExamenPornombreConPreguntas("Matematicas");
+
+        //Realizamos las comprobaciones que creamos conveniente
+        assertEquals(5,examen.getId());
+        assertEquals(2,examen.getPreguntas().size());
+
+        //En este test se observara que estamos ejecutando los metodos reales (Hay una salida por pantalla de ellos)
+        //Ademas de entregar los datos que nosotros hemos indicado en el comportamiento
     }
 
     public static class MiArgumentMatchers implements ArgumentMatcher<Long>{

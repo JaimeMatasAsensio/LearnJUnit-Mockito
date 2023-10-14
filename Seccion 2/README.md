@@ -16,6 +16,7 @@ Repositorio para el aprendizaje de Mockito-Junit
 - doThrow para execepciones de metedos void
 - doAnswer para generar respuestas a medida
 - doCallRealMethod para la llamada real a un metodo Mock
+- @Spy y metodo doReturn()
 - ...
 
 Siguiente leccion a practicar: 51

@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class ExamenRepositoryImpl implements IExamenRepository{
     @Override
     public List<Examen> findAll() {
-        System.out.println("Metodo real" + this.getClass());
+        System.out.println("Metodo real " + this.getClass().getName()+".findAll");
         try {
             TimeUnit.SECONDS.sleep(5);
         } catch (InterruptedException e) {
@@ -20,7 +20,7 @@ public class ExamenRepositoryImpl implements IExamenRepository{
 
     @Override
     public Examen guardar(Examen examen) {
-        System.out.println("Metodo real" + this.getClass());
+        System.out.println("Metodo real" + this.getClass().getName()+".guardar");
         return DatosExamenes.EXAMEN;
     }
 
