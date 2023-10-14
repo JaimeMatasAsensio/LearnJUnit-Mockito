@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class) //Otra forma de habilidar las anotaciones
 class ExamenServiceImplSpyTest {
-    
+
     @Spy
     private ExamenRepositoryImpl repository;
     @Spy

@@ -17,6 +17,7 @@ Repositorio para el aprendizaje de Mockito-Junit
 - doAnswer para generar respuestas a medida
 - doCallRealMethod para la llamada real a un metodo Mock
 - @Spy y metodo doReturn()
-- ...
+- Verificar el Orden de invocacion de los Mock con InOrder
+- Verificar el Numero de invocaciones de los Mock con verify(Mock,Mode)
 
-Siguiente leccion a practicar: 51
+Fin seccion 2 :godmode: :+1:

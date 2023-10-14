@@ -16,6 +16,7 @@ import org.seccion2.appmockito.ejemplos.repositories.IExamenRepository;
 import org.seccion2.appmockito.ejemplos.repositories.IPreguntaRepository;
 import org.seccion2.appmockito.ejemplos.repositories.PreguntasRepositoryImpl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -275,6 +276,43 @@ class ExamenServiceImplTest {
 
         //En este test se observara que estamos ejecutando los metodos reales (Hay una salida por pantalla de ellos)
         //Ademas de entregar los datos que nosotros hemos indicado en el comportamiento
+    }
+
+    @Test
+    void testOrdenInvocaciones() {
+        when(repository.findAll()).thenReturn(DatosExamenes.EXAMENES);
+
+        service.findExamenPornombreConPreguntas("Matematicas");
+        service.findExamenPornombreConPreguntas("Lengauje");
+
+        InOrder inOrder = inOrder(repository,repositoryPregunta);
+
+        inOrder.verify(repository).findAll();
+        inOrder.verify(repositoryPregunta).findPreguntasPorExamenId(5L);
+        inOrder.verify(repository).findAll();
+        inOrder.verify(repositoryPregunta).findPreguntasPorExamenId(6L);
+
+    }
+
+    @Test
+    void testNumeroInvocaciones() {
+        when(repository.findAll()).thenReturn(DatosExamenes.EXAMENES);
+        service.findExamenPornombreConPreguntas("Matematicas");
+        verify(repositoryPregunta).findPreguntasPorExamenId(5L);
+        verify(repositoryPregunta, times(1)).findPreguntasPorExamenId(5L);
+        verify(repositoryPregunta,atLeast(1)).findPreguntasPorExamenId(5L);
+        verify(repositoryPregunta,atLeastOnce()).findPreguntasPorExamenId(5L);
+        verify(repositoryPregunta,atMost(1)).findPreguntasPorExamenId(5L);
+        verify(repositoryPregunta,atMostOnce()).findPreguntasPorExamenId(5L);
+    }
+
+    @Test
+    void testNumeroInvocacionesNunca() {
+        List<Examen> listExamenEmpty = new ArrayList<>();
+        when(repository.findAll()).thenReturn(listExamenEmpty);
+        service.findExamenPornombreConPreguntas("Matematicas");
+        verify(repositoryPregunta,never()).findPreguntasPorExamenId(5L);
+
     }
 
     public static class MiArgumentMatchers implements ArgumentMatcher<Long>{

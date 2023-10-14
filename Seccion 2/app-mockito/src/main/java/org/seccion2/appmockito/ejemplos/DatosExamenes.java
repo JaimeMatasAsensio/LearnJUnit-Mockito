@@ -23,7 +23,7 @@ public class DatosExamenes {
             new Examen(-1L, "Ciencias"));
     public final static List<String> PREGUNTAS = Arrays.asList("aritmetica","integrales","derivadas","trigonometria","geometria");
 
-    public final static List<String> PREGUNTAS_SPY = Arrays.asList("Estadistica","Datos Discretos");
+public final static List<String> PREGUNTAS_SPY = Arrays.asList("Estadistica","Datos Discretos");
 
     public final static Examen EXAMEN = new Examen(8L,"Fisica");
 
