@@ -5,6 +5,6 @@ Repositorio para el aprendizaje de Mockito-Junit
 - Creacion de proyectos en Springin Itializer e importacion a ItelliJ
 - Creacion de las Clases, Interfaces para los test
 - Creacion de test con AssertEquals y verify
+- Creacion de test con AssertThrows
 
-
-Siguiente leccion a practivar :point_rigth:
+Fin seccion 2 :godmode: :+1:

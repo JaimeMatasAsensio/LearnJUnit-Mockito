@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.test.springboot.seccion3.app.exceptions.DineroInsuficienteException;
 import org.test.springboot.seccion3.app.models.Banco;
 import org.test.springboot.seccion3.app.models.Cuenta;
 import org.test.springboot.seccion3.app.repositories.IBancoRepository;
@@ -16,6 +17,7 @@ import org.test.springboot.seccion3.app.services.ICuentaService;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -43,7 +45,7 @@ class SpringbootTestApplicationTests {
 	}
 
 	@Test
-	void contextLoads() {
+	void testSpring1() {
 
 		when(cuentaRepository.findById(anyLong())).thenReturn(cuenta1).thenReturn(cuenta2)
 				.thenReturn(cuenta1).thenReturn(cuenta2).thenReturn(cuenta1).thenReturn(cuenta2);
@@ -70,5 +72,25 @@ class SpringbootTestApplicationTests {
 		verify(bancoRepository,times(1)).update(any(Banco.class));
 
 	}
+
+	@Test
+	void testSpring2() {
+
+		when(cuentaRepository.findById(anyLong())).thenReturn(cuenta1).thenReturn(cuenta2)
+				.thenReturn(cuenta1).thenReturn(cuenta2).thenReturn(cuenta1).thenReturn(cuenta2);
+		when(bancoRepository.findById(anyLong())).thenReturn(banco);
+
+		BigDecimal saldoOrigen = service.revisarSaldo(1L);
+		BigDecimal saldoDestino = service.revisarSaldo(2L);
+
+		assertEquals(new BigDecimal(1000),saldoOrigen );
+		assertEquals(new BigDecimal(2000),saldoDestino );
+
+		assertThrows(DineroInsuficienteException.class, () ->service.transferir(1L,2L,new BigDecimal(1100),1L));
+
+		verify(cuentaRepository, times(4)).findById(anyLong());
+		verify(bancoRepository, times(1)).findById(anyLong());
+
+		}
 
 }
