@@ -7,4 +7,4 @@ Repositorio para el aprendizaje de Mockito-Junit
 - Creacion de test con AssertEquals y verify
 - Creacion de test con AssertThrows
 
-Fin seccion 2 :godmode: :+1:
+Fin seccion 3 :godmode: :+1:

@@ -1,14 +1,20 @@
 package org.test.springboot.seccion3.app.models;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "Bancos")
 public class Banco {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
+    @Column(name = "total_transferencias")
     private int totalTransferencias;
 
     public Banco() {
     }
-
     public Banco(Long id, String nombre, int totalTransferencias) {
         this.id = id;
         this.nombre = nombre;

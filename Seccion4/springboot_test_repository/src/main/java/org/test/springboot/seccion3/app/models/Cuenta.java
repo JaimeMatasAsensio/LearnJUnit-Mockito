@@ -1,11 +1,18 @@
 package org.test.springboot.seccion3.app.models;
 
+import jakarta.persistence.*;
 import org.test.springboot.seccion3.app.exceptions.DineroInsuficienteException;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@Entity
+@Table(name = "cuentas")
+
 public class Cuenta {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String persona;
     private BigDecimal saldo;
