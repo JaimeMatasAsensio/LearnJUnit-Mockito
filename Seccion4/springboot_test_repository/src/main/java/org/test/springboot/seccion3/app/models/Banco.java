@@ -3,7 +3,7 @@ package org.test.springboot.seccion3.app.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Bancos")
+@Table(name = "bancos")
 public class Banco {
 
     @Id

@@ -8,7 +8,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "cuentas")
-
 public class Cuenta {
 
     @Id

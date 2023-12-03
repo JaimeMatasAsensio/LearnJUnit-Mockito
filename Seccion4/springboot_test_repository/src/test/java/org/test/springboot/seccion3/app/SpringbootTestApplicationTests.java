@@ -15,6 +15,7 @@ import org.test.springboot.seccion3.app.services.CuentaServiceImpl;
 import org.test.springboot.seccion3.app.services.ICuentaService;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -47,9 +48,13 @@ class SpringbootTestApplicationTests {
 	@Test
 	void testSpring1() {
 
-		when(cuentaRepository.findById(anyLong())).thenReturn(cuenta1).thenReturn(cuenta2)
-				.thenReturn(cuenta1).thenReturn(cuenta2).thenReturn(cuenta1).thenReturn(cuenta2);
-		when(bancoRepository.findById(anyLong())).thenReturn(banco);
+		when(cuentaRepository.findById(anyLong())).thenReturn(Optional.of(cuenta1))
+				.thenReturn(Optional.of(cuenta2))
+				.thenReturn(Optional.of(cuenta1))
+				.thenReturn(Optional.of(cuenta2))
+				.thenReturn(Optional.of(cuenta1))
+				.thenReturn(Optional.of(cuenta2));
+		when(bancoRepository.findById(anyLong())).thenReturn(Optional.of(banco));
 
 		BigDecimal saldoOrigen = service.revisarSaldo(1L);
 		BigDecimal saldoDestino = service.revisarSaldo(2L);
@@ -68,17 +73,21 @@ class SpringbootTestApplicationTests {
 		verify(cuentaRepository, times(6)).findById(anyLong());
 		verify(bancoRepository, times(1)).findById(anyLong());
 
-		verify(cuentaRepository, times(2)).update(any(Cuenta.class));
-		verify(bancoRepository,times(1)).update(any(Banco.class));
+		verify(cuentaRepository, times(2)).save(any(Cuenta.class));
+		verify(bancoRepository,times(1)).save(any(Banco.class));
 
 	}
 
 	@Test
 	void testSpring2() {
 
-		when(cuentaRepository.findById(anyLong())).thenReturn(cuenta1).thenReturn(cuenta2)
-				.thenReturn(cuenta1).thenReturn(cuenta2).thenReturn(cuenta1).thenReturn(cuenta2);
-		when(bancoRepository.findById(anyLong())).thenReturn(banco);
+		when(cuentaRepository.findById(anyLong())).thenReturn(Optional.of(cuenta1))
+				.thenReturn(Optional.of(cuenta2))
+				.thenReturn(Optional.of(cuenta1))
+				.thenReturn(Optional.of(cuenta2))
+				.thenReturn(Optional.of(cuenta1))
+				.thenReturn(Optional.of(cuenta2));
+		when(bancoRepository.findById(anyLong())).thenReturn(Optional.of(banco));
 
 		BigDecimal saldoOrigen = service.revisarSaldo(1L);
 		BigDecimal saldoDestino = service.revisarSaldo(2L);
@@ -86,7 +95,7 @@ class SpringbootTestApplicationTests {
 		assertEquals(new BigDecimal(1000),saldoOrigen );
 		assertEquals(new BigDecimal(2000),saldoDestino );
 
-		assertThrows(DineroInsuficienteException.class, () ->service.transferir(1L,2L,new BigDecimal(1100),1L));
+		assertThrows(DineroInsuficienteException.class, () -> service.transferir(1L,2L,new BigDecimal(1100),1L));
 
 		verify(cuentaRepository, times(4)).findById(anyLong());
 		verify(bancoRepository, times(1)).findById(anyLong());

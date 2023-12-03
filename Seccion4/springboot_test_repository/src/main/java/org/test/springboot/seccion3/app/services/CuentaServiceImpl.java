@@ -6,6 +6,7 @@ import org.test.springboot.seccion3.app.repositories.IBancoRepository;
 import org.test.springboot.seccion3.app.repositories.ICuentaRepository;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public class CuentaServiceImpl implements ICuentaService {
 
@@ -20,34 +21,34 @@ public class CuentaServiceImpl implements ICuentaService {
 
     @Override
     public Cuenta findById(Long id) {
-        return cuentaRepository.findById(id);
+        return cuentaRepository.findById(id).orElseThrow();
     }
 
     @Override
     public int revisarTotalTransferencias(Long bancoId) {
-        return bancoRepository.findById(bancoId).getTotalTransferencias();
+        return bancoRepository.findById(bancoId).orElseThrow().getTotalTransferencias();
     }
 
     @Override
     public BigDecimal revisarSaldo(Long cuentaId) {
-        return cuentaRepository.findById(cuentaId).getSaldo();
+        return cuentaRepository.findById(cuentaId).orElseThrow().getSaldo();
     }
 
     @Override
     public void transferir(Long numCuentaOrigen, Long numCuentaDestino, BigDecimal monto, Long bancoId) {
-        Cuenta cuentaOrigen = cuentaRepository.findById(numCuentaOrigen);
-        Cuenta cuentaDestino = cuentaRepository.findById(numCuentaDestino);
-        Banco banco = bancoRepository.findById(bancoId);
+        Cuenta cuentaOrigen = cuentaRepository.findById(numCuentaOrigen).orElseThrow();
+        Cuenta cuentaDestino = cuentaRepository.findById(numCuentaDestino).orElseThrow();
+        Banco banco = bancoRepository.findById(bancoId).orElseThrow();
 
         cuentaOrigen.debito(monto);
-        cuentaRepository.update(cuentaOrigen);
+        cuentaRepository.save(cuentaOrigen);
 
         cuentaDestino.credito(monto);
-        cuentaRepository.update(cuentaDestino);
+        cuentaRepository.save(cuentaDestino);
 
         int totalTransferencias = banco.getTotalTransferencias();
         banco.setTotalTransferencias(++totalTransferencias);
-        bancoRepository.update(banco);
+        bancoRepository.save(banco);
 
     }
 }
