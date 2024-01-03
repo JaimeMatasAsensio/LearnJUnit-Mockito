@@ -3,5 +3,7 @@
 Repositorio para el aprendizaje de Mockito-Junit
 
 - Test sobre controladores con MockMvc
+- Implementacion de Swagger
+- Test sobre endpoints mockeados
 
-Seccion 5, siguiente leccion: 75
+Fin Seccion 5 :godmode: :+1:

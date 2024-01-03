@@ -13,10 +13,12 @@ import org.test.springboot.seccion5.app.repositories.ICuentaRepository;
 import org.test.springboot.seccion5.app.services.CuentaServiceImpl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -100,4 +102,37 @@ class SpringbootTestApplicationTests {
 
 	}
 
+	@Test
+	void testFindAll() {
+		//Given
+
+		when(cuentaRepository.findAll()).thenReturn(List.of(cuenta1,cuenta2));
+
+		//When
+		List<Cuenta> cuentas = service.findAll();
+
+		//Then
+		assertFalse(cuentas.isEmpty());
+		assertEquals(2,cuentas.size());
+		assertTrue(cuentas.contains(cuenta1));
+
+		verify(cuentaRepository).findAll();
+	}
+
+	@Test
+	void testCrear() {
+		//Given
+		when(cuentaRepository.save(any())).then(invocation ->{
+			Cuenta c = invocation.getArgument(0);
+			c.setId(3L);
+			return c;
+		});
+		//When
+		Cuenta cuenta = service.save(cuenta1);
+
+		//Then
+		assertEquals(3,cuenta.getId());
+		assertEquals("Persona1",cuenta.getPersona());
+		verify(cuentaRepository).save(any());
+	}
 }
