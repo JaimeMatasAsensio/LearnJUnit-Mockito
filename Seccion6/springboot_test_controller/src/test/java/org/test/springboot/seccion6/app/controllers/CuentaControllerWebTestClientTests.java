@@ -171,4 +171,77 @@ class CuentaControllerWebTestClientTests {
                 .hasSize(2);
 
     }
+
+    @Test
+    @Order(6)
+    void testGuardar() {
+        //Given
+        Cuenta cuenta = new Cuenta(null,"nombre",new BigDecimal(500));
+        //When
+        client.post().uri("/api/cuentas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(cuenta)
+                .exchange()
+        //Then
+                .expectStatus().isCreated()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.persona").isEqualTo("nombre")
+                .jsonPath("$.persona").value(is("nombre"))
+                .jsonPath("$.id").isEqualTo(3)
+                .jsonPath("$.saldo").isEqualTo(500);
+    }
+
+    @Test
+    @Order(7)
+    void testGuardar1() {
+        //Given
+        Cuenta cuenta = new Cuenta(null,"Name",new BigDecimal(600));
+        //When
+        client.post().uri("/api/cuentas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(cuenta)
+                .exchange()
+                //Then
+                .expectStatus().isCreated()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Cuenta.class)
+                .consumeWith(r ->{
+                    Cuenta c = r.getResponseBody();
+                    assertNotNull( c.getId());
+                    assertEquals("Name", c.getPersona());
+                    assertEquals("600",c.getSaldo().toString());
+                });
+    }
+
+
+    @Test
+    @Order(8)
+    void testEliminar() {
+
+        client.get().uri("/api/cuentas")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(Cuenta.class)
+                .hasSize(4);
+
+        client.delete().uri("/api/cuentas/3")
+                .exchange()
+                .expectStatus().isNoContent()
+                .expectBody().isEmpty();
+
+        client.get().uri("/api/cuentas")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBodyList(Cuenta.class)
+                .hasSize(3);
+
+        client.get().uri("/api/cuentas/3")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody().isEmpty();
+
+    }
 }
